@@ -280,7 +280,7 @@ object GPUImageFilterTools {
             )
 
             FilterType.LOOKUP_AMATORKA -> GPUImageLookupFilter().apply {
-                bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.lookup_amatorka)
+                bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.beauty_filter_12_1_1)
             }
             FilterType.GAUSSIAN_BLUR -> GPUImageGaussianBlurFilter()
             FilterType.CROSSHATCH -> GPUImageCrosshatchFilter()
