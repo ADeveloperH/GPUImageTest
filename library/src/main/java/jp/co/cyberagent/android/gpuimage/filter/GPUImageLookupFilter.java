@@ -18,6 +18,11 @@ package jp.co.cyberagent.android.gpuimage.filter;
 
 import android.opengl.GLES20;
 
+
+/**
+ * 颜色查找表滤镜：lookup table
+ *
+ */
 public class GPUImageLookupFilter extends GPUImageTwoInputFilter {
 
     public static final String LOOKUP_FRAGMENT_SHADER = "varying highp vec2 textureCoordinate;\n" +
@@ -58,7 +63,7 @@ public class GPUImageLookupFilter extends GPUImageTwoInputFilter {
             " }";
 
     private int intensityLocation;
-    private float intensity;
+    private float intensity;//调整因子[0,1]
 
     public GPUImageLookupFilter() {
         this(1.0f);
