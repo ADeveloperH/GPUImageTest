@@ -531,7 +531,7 @@ public class GPUImageView extends FrameLayout {
 
         public SaveTask(final String folderName, final String fileName,
                         final OnPictureSavedListener listener) {
-            this(folderName, fileName, 0, 0, listener);
+            this(folderName, fileName, 500,500, listener);
         }
 
         public SaveTask(final String folderName, final String fileName, int width, int height,
