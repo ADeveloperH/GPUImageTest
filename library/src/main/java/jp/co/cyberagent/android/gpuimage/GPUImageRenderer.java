@@ -99,7 +99,31 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, GLTextureView.R
     @Override
     public void onSurfaceCreated(final GL10 unused, final EGLConfig config) {
         Log.w("hj", "GPUImageRenderer.onSurfaceCreated: ");
+        /**
+         * 为颜色缓冲区指定清除值
+         * void glClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
+         *
+         * 参数
+         * red,green,blue,alpha
+         * 指定颜色缓冲区清除时的RGBA值，默认都是0
+         *
+         * 描述
+         * glClearColor为glClear清除颜色缓冲区时指定RGBA值（也就是所有的颜色都会被替换成指定的RGBA值）。每个值的取值范围都是0.0~1.0，超出范围的将被截断。
+         *
+         * 参考：https://blog.csdn.net/flycatdeng/article/details/82664971
+         */
         GLES20.glClearColor(backgroundRed, backgroundGreen, backgroundBlue, 1);
+        /**
+         * 启用或禁用服务器端GL功能
+         * void glEnable（GLenum cap）;
+         * void glDisable（GLenum cap）;
+         * 参数
+         * cap:指定表示GL功能的符号常量。
+         * GL_DEPTH_TEST
+         * 如果启用，进行深度比较并更新深度缓冲区。 注意，即使存在深度缓冲区且深度掩码不为零，如果禁用深度测试，也将不会更新深度缓冲区。 请参阅glDepthFunc和glDepthRangef。
+         * 参考：https://blog.csdn.net/flycatdeng/article/details/82667050
+         *
+         */
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
         filter.ifNeedInit();
     }
@@ -110,7 +134,30 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, GLTextureView.R
         Log.d("hj", "GPUImageRenderer.onSurfaceChanged: width:" + width + "  height:" + height);
         outputWidth = width;
         outputHeight = height;
+        /**
+         * 设置视口
+         * void glViewport（GLint x,GLint y,GLsizei width,GLsizei height）;
+         *
+         * 参数
+         * x, y：指定视口矩形的左下角坐标，以像素为单位，初始值为（0，0）。
+         * width, height：指定视口的宽高，当一个GLContext第一次绑定到一个窗口时，width, height就会被指定为该窗口的宽高。
+         *
+         * 视口宽高会被默认限制到一定的范围内，视具体实现而定，可以通过glGet变量GL_MAX_VIEWPORT_DIMS得到
+         *
+         * 参考：https://blog.csdn.net/flycatdeng/article/details/82667381
+         */
         GLES20.glViewport(0, 0, width, height);
+        /**
+         * 使用程序对象作为当前渲染状态的一部分
+         * void glUseProgram（GLuint program）;
+         *
+         * 参数
+         * program：指定程序对象的句柄，该程序对象的可执行文件将用作当前渲染状态的一部分。
+         * 如果program为0，则当前呈现状态引用无效的程序对象，并且会使得任何glDrawArrays或glDrawElements命令的顶点和片段着色器执行的结果未定义。
+         *
+         * 参考：https://blog.csdn.net/flycatdeng/article/details/82667360
+         *
+         */
         GLES20.glUseProgram(filter.getProgram());
         filter.onOutputSizeChanged(width, height);
         adjustImageScaling();
@@ -122,6 +169,26 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, GLTextureView.R
     @Override
     public void onDrawFrame(final GL10 gl) {
         Log.w("hj", "GPUImageRenderer.onDrawFrame: ");
+        /**
+         * 清除预设值的缓冲区
+         * void glClear（GLbitfield mask）;
+         *
+         * 参数
+         * mask：使用掩码的按位异或运算来表示要清除的缓冲区。 三个掩码是GL_COLOR_BUFFER_BIT，GL_DEPTH_BUFFER_BIT和GL_STENCIL_BUFFER_BIT。
+         *
+         * 描述
+         * glClear将窗口的位平面区域设置为先前由glClearColor，glClearDepthf和glClearStencil设置的值。
+         * 像素的归属测试，裁剪测试，抖动和缓冲区按位掩码都会影响glClear的操作。裁剪箱限定了清除区域。glClear忽略混合函数，模板，片元着色和深度缓冲。
+         * glClear采用单个参数，该参数是多个值的按位异或，指示要清除哪个缓冲区。
+         * 值如下：
+         * GL_COLOR_BUFFER_BIT：表示当前启用了颜色写入的缓冲区。
+         * GL_DEPTH_BUFFER_BIT：深度缓冲区。
+         * GL_STENCIL_BUFFER_BIT：指示模板缓冲区。
+         *
+         * 清除每个缓冲区的值取决于该缓冲区的清除值的设置。
+         *
+         * 参考：https://blog.csdn.net/flycatdeng/article/details/82664964
+         */
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         runAll(runOnDraw);
         filter.onDraw(glTextureId, glCubeBuffer, glTextureBuffer);
@@ -185,6 +252,22 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, GLTextureView.R
             @Override
             public void run() {
                 int[] textures = new int[1];
+                /**
+                 * 生成纹理名称（ID）
+                 * void glGenTextures( GLsizei n,GLuint * textures);
+                 *
+                 * 参数
+                 * n：指定要生成的纹理ID的数量。
+                 * textures：指定存储生成的纹理ID的数组。
+                 *
+                 * 描述
+                 * glGenTextures产生ｎ个纹理ID存储在textures数组中，这个方法并不保存返回的是一串连续的整数数组，但是能保证的是：这些ID在调用glGenTextures之前都没有正在被使用。
+                 * 生成的textures此时还是没有维度的，当他们第一次绑定纹理目标时才被指定维度（见glBindTexture）。
+                 * 通过调用glGenTextures返回的纹理ID不会被后续调用返回，除非首先使用glDeleteTextures删除它们。
+                 *
+                 * 参考：https://blog.csdn.net/flycatdeng/article/details/82667152
+                 *
+                 */
                 GLES20.glGenTextures(1, textures, 0);
                 surfaceTexture = new SurfaceTexture(textures[0]);
                 try {
