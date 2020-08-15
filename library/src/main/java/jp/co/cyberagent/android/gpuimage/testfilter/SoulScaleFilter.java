@@ -1,5 +1,6 @@
 package jp.co.cyberagent.android.gpuimage.testfilter;
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.util.Log;
 
@@ -75,8 +76,9 @@ public class SoulScaleFilter extends GPUImageFilter {
 
     private int scalePercentIndex = 0;
     private int mixturePercentIndex = 0;
-    public SoulScaleFilter() {
-        super(NO_FILTER_VERTEX_SHADER, SOULSCALE_FRAGMENT_SHADER);
+
+    public SoulScaleFilter(Context context) {
+        super(NO_FILTER_VERTEX_SHADER, loadShader("soulscale.fsh", context));
     }
 
     @Override
@@ -106,8 +108,8 @@ public class SoulScaleFilter extends GPUImageFilter {
         if (mixturePercentIndex >= mixturePercentArray.length) {
             mixturePercentIndex = 0;
         }
-        setFloat(scalePercentLocation,scalePercentArray[scalePercentIndex]);
-        setFloat(mixturePercentLocation,mixturePercentArray[mixturePercentIndex]);
+        setFloat(scalePercentLocation, scalePercentArray[scalePercentIndex]);
+        setFloat(mixturePercentLocation, mixturePercentArray[mixturePercentIndex]);
 
         scalePercentIndex++;
         mixturePercentIndex++;
