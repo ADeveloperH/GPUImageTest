@@ -434,4 +434,13 @@ public class GPUImageFilter {
         java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
     }
+
+
+    /**
+     * 是否需要自动刷新（用于动画）
+     * @return
+     */
+    public boolean needAutoRefresh() {
+        return false;
+    }
 }

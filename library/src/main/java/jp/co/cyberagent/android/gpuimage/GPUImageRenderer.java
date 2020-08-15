@@ -80,12 +80,15 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, GLTextureView.R
     private float backgroundGreen = 0;
     private float backgroundBlue = 0;
 
-    public GPUImageRenderer(final GPUImageFilter filter) {
+    private GPUImage gpuImage;
+
+    public GPUImageRenderer(final GPUImageFilter filter,GPUImage gpuImage) {
+        this.gpuImage = gpuImage;
         this.filter = filter;
         runOnDraw = new LinkedList<>();
         runOnDrawEnd = new LinkedList<>();
 
-        glCubeBuffer = ByteBuffer.allocateDirect(CUBE.length * 4)
+        glCubeBuffer = ByteBuffer.allocateDirect(CUBE.length * 4)//float 类型 4 字节
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
         glCubeBuffer.put(CUBE).position(0);
@@ -195,6 +198,9 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, GLTextureView.R
         runAll(runOnDrawEnd);
         if (surfaceTexture != null) {
             surfaceTexture.updateTexImage();
+        }
+        if (this.gpuImage != null && filter.needAutoRefresh()) {
+            this.gpuImage.requestRender();
         }
     }
 

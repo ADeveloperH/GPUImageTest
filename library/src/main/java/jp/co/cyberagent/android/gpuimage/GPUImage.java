@@ -81,7 +81,7 @@ public class GPUImage {
 
         this.context = context;
         filter = new GPUImageFilter();
-        renderer = new GPUImageRenderer(filter);
+        renderer = new GPUImageRenderer(filter, this);
     }
 
     /**
@@ -259,7 +259,7 @@ public class GPUImage {
      * @return array with width and height of bitmap image
      */
     public int[] getScaleSize() {
-        return new int[] {scaleWidth, scaleHeight};
+        return new int[]{scaleWidth, scaleHeight};
     }
 
     /**
@@ -374,7 +374,7 @@ public class GPUImage {
             }
         }
 
-        GPUImageRenderer renderer = new GPUImageRenderer(filter);
+        GPUImageRenderer renderer = new GPUImageRenderer(filter, this);
         renderer.setRotation(Rotation.NORMAL,
                 this.renderer.isFlippedHorizontally(), this.renderer.isFlippedVertically());
         renderer.setScaleType(scaleType);
@@ -406,12 +406,12 @@ public class GPUImage {
      * @param filters  the filters which will be applied on the bitmap
      * @param listener the listener on which the results will be notified
      */
-    public static void getBitmapForMultipleFilters(final Bitmap bitmap,
-                                                   final List<GPUImageFilter> filters, final ResponseListener<Bitmap> listener) {
+    public void getBitmapForMultipleFilters(final Bitmap bitmap,
+                                            final List<GPUImageFilter> filters, final ResponseListener<Bitmap> listener) {
         if (filters.isEmpty()) {
             return;
         }
-        GPUImageRenderer renderer = new GPUImageRenderer(filters.get(0));
+        GPUImageRenderer renderer = new GPUImageRenderer(filters.get(0), this);
         renderer.setImageBitmap(bitmap, false);
         PixelBuffer buffer = new PixelBuffer(bitmap.getWidth(), bitmap.getHeight());
         buffer.setRenderer(renderer);
