@@ -21,7 +21,7 @@ import android.opengl.GLES20;
 
 /**
  * 颜色查找表滤镜：lookup table
- *
+ * 参考：https://blog.csdn.net/liuderong0/article/details/104071011
  */
 public class GPUImageLookupFilter extends GPUImageTwoInputFilter {
 

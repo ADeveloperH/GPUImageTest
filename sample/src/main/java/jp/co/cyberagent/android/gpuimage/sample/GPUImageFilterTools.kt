@@ -588,7 +588,7 @@ object GPUImageFilterTools {
         private inner class GaussianBlurAdjuster(filter: GPUImageGaussianBlurFilter) :
                 Adjuster<GPUImageGaussianBlurFilter>(filter) {
             override fun adjust(percentage: Int) {
-                filter.setBlurSize(range(percentage, 0.0f, 1.0f))
+                filter.setBlurSize(range(percentage, 0.0f, 10f))
             }
         }
 

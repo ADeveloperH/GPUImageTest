@@ -171,7 +171,6 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, GLTextureView.R
 
     @Override
     public void onDrawFrame(final GL10 gl) {
-        Log.w("hj", "GPUImageRenderer.onDrawFrame: ");
         /**
          * 清除预设值的缓冲区
          * void glClear（GLbitfield mask）;
