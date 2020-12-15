@@ -31,6 +31,7 @@ object GPUImageFilterTools {
             listener: (filterName: String, filter: GPUImageFilter) -> Unit
     ) {
         val filters = FilterList().apply {
+            addFilter("Cube(立方体capcut)", FilterType.CUBE)
             addFilter("DoorWay(开幕capcut)", FilterType.DOORWAY)
             addFilter("PinWheel(风车capcut)", FilterType.PINWHEEL)
             addFilter("CircleScan(圆形扫描capcut)", FilterType.CIRCLESCAN)
@@ -142,6 +143,7 @@ object GPUImageFilterTools {
 
     private fun createFilterForType(context: Context, type: FilterType): GPUImageFilter {
         return when (type) {
+            FilterType.CUBE -> CubeFilter(context)
             FilterType.DOORWAY -> DoorWaylFilter(context)
             FilterType.PINWHEEL -> PinWheellFilter(context)
             FilterType.CIRCLESCAN -> CircleScanFilter(context)
@@ -342,7 +344,7 @@ object GPUImageFilterTools {
     }
 
     private enum class FilterType {
-        DOORWAY,PINWHEEL,CIRCLESCAN,INVERTEDPAGECURL,ROTATIONALBLUR,FAKE3D, SOULSCALE, CONTRAST, GRAYSCALE, SHARPEN, SEPIA, SOBEL_EDGE_DETECTION, THRESHOLD_EDGE_DETECTION, THREE_X_THREE_CONVOLUTION, FILTER_GROUP, EMBOSS, POSTERIZE, GAMMA, BRIGHTNESS, INVERT, HUE, PIXELATION,
+        CUBE,DOORWAY,PINWHEEL,CIRCLESCAN,INVERTEDPAGECURL,ROTATIONALBLUR,FAKE3D, SOULSCALE, CONTRAST, GRAYSCALE, SHARPEN, SEPIA, SOBEL_EDGE_DETECTION, THRESHOLD_EDGE_DETECTION, THREE_X_THREE_CONVOLUTION, FILTER_GROUP, EMBOSS, POSTERIZE, GAMMA, BRIGHTNESS, INVERT, HUE, PIXELATION,
         SATURATION, EXPOSURE, HIGHLIGHT_SHADOW, MONOCHROME, OPACITY, RGB, WHITE_BALANCE, VIGNETTE, TONE_CURVE, LUMINANCE, LUMINANCE_THRESHSOLD, BLEND_COLOR_BURN, BLEND_COLOR_DODGE, BLEND_DARKEN,
         BLEND_DIFFERENCE, BLEND_DISSOLVE, BLEND_EXCLUSION, BLEND_SOURCE_OVER, BLEND_HARD_LIGHT, BLEND_LIGHTEN, BLEND_ADD, BLEND_DIVIDE, BLEND_MULTIPLY, BLEND_OVERLAY, BLEND_SCREEN, BLEND_ALPHA,
         BLEND_COLOR, BLEND_HUE, BLEND_SATURATION, BLEND_LUMINOSITY, BLEND_LINEAR_BURN, BLEND_SOFT_LIGHT, BLEND_SUBTRACT, BLEND_CHROMA_KEY, BLEND_NORMAL, LOOKUP_AMATORKA,
@@ -365,6 +367,7 @@ object GPUImageFilterTools {
 
         init {
             adjuster = when (filter) {
+                is CubeFilter -> CubeAdjuster(filter)
                 is DoorWaylFilter -> DoorWayAdjuster(filter)
                 is PinWheellFilter -> PinWheelAdjuster(filter)
                 is CircleScanFilter -> CircleScanAdjuster(filter)
@@ -433,6 +436,13 @@ object GPUImageFilterTools {
 
         private inner class CircleScanAdjuster(filter: CircleScanFilter) :
                 Adjuster<CircleScanFilter>(filter) {
+            override fun adjust(percentage: Int) {
+                filter.setProgress(range(percentage, 0.0F, 1.0f))
+            }
+        }
+
+        private inner class CubeAdjuster(filter: CubeFilter) :
+                Adjuster<CubeFilter>(filter) {
             override fun adjust(percentage: Int) {
                 filter.setProgress(range(percentage, 0.0F, 1.0f))
             }
