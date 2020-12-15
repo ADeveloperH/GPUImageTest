@@ -11,7 +11,7 @@ import jp.co.cyberagent.android.gpuimage.filter.GPUImageFilter;
 /**
  * @author huangjian
  * @create 2020/8/15
- * @Description
+ * @Description 旋转模糊
  */
 public class RotationBlurFilter extends GPUImageFilter {
 
