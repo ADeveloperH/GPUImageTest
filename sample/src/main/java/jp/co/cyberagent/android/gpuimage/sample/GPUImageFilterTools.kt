@@ -22,10 +22,7 @@ import android.graphics.BitmapFactory
 import android.graphics.PointF
 import android.opengl.Matrix
 import jp.co.cyberagent.android.gpuimage.filter.*
-import jp.co.cyberagent.android.gpuimage.testfilter.Fake3dFilter
-import jp.co.cyberagent.android.gpuimage.testfilter.InvertedPageCurlFilter
-import jp.co.cyberagent.android.gpuimage.testfilter.RotationBlurFilter
-import jp.co.cyberagent.android.gpuimage.testfilter.SoulScaleFilter
+import jp.co.cyberagent.android.gpuimage.testfilter.*
 import java.util.*
 
 object GPUImageFilterTools {
@@ -34,6 +31,7 @@ object GPUImageFilterTools {
             listener: (filterName: String, filter: GPUImageFilter) -> Unit
     ) {
         val filters = FilterList().apply {
+            addFilter("CircleScan(capcut)", FilterType.CIRCLESCAN)
             addFilter("InvertedPageCurl(capcut)", FilterType.INVERTEDPAGECURL)
             addFilter("RotationalBlur(capcut)", FilterType.ROTATIONALBLUR)
             addFilter("Fake3d(tiktok)", FilterType.FAKE3D)
@@ -142,6 +140,7 @@ object GPUImageFilterTools {
 
     private fun createFilterForType(context: Context, type: FilterType): GPUImageFilter {
         return when (type) {
+            FilterType.CIRCLESCAN -> CircleScanFilter(context)
             FilterType.INVERTEDPAGECURL -> InvertedPageCurlFilter(context)
             FilterType.ROTATIONALBLUR -> RotationBlurFilter(context)
             FilterType.FAKE3D -> Fake3dFilter(context)
@@ -339,7 +338,7 @@ object GPUImageFilterTools {
     }
 
     private enum class FilterType {
-        INVERTEDPAGECURL,ROTATIONALBLUR,FAKE3D, SOULSCALE, CONTRAST, GRAYSCALE, SHARPEN, SEPIA, SOBEL_EDGE_DETECTION, THRESHOLD_EDGE_DETECTION, THREE_X_THREE_CONVOLUTION, FILTER_GROUP, EMBOSS, POSTERIZE, GAMMA, BRIGHTNESS, INVERT, HUE, PIXELATION,
+        CIRCLESCAN,INVERTEDPAGECURL,ROTATIONALBLUR,FAKE3D, SOULSCALE, CONTRAST, GRAYSCALE, SHARPEN, SEPIA, SOBEL_EDGE_DETECTION, THRESHOLD_EDGE_DETECTION, THREE_X_THREE_CONVOLUTION, FILTER_GROUP, EMBOSS, POSTERIZE, GAMMA, BRIGHTNESS, INVERT, HUE, PIXELATION,
         SATURATION, EXPOSURE, HIGHLIGHT_SHADOW, MONOCHROME, OPACITY, RGB, WHITE_BALANCE, VIGNETTE, TONE_CURVE, LUMINANCE, LUMINANCE_THRESHSOLD, BLEND_COLOR_BURN, BLEND_COLOR_DODGE, BLEND_DARKEN,
         BLEND_DIFFERENCE, BLEND_DISSOLVE, BLEND_EXCLUSION, BLEND_SOURCE_OVER, BLEND_HARD_LIGHT, BLEND_LIGHTEN, BLEND_ADD, BLEND_DIVIDE, BLEND_MULTIPLY, BLEND_OVERLAY, BLEND_SCREEN, BLEND_ALPHA,
         BLEND_COLOR, BLEND_HUE, BLEND_SATURATION, BLEND_LUMINOSITY, BLEND_LINEAR_BURN, BLEND_SOFT_LIGHT, BLEND_SUBTRACT, BLEND_CHROMA_KEY, BLEND_NORMAL, LOOKUP_AMATORKA,
@@ -362,6 +361,7 @@ object GPUImageFilterTools {
 
         init {
             adjuster = when (filter) {
+                is CircleScanFilter -> CircleScanAdjuster(filter)
                 is InvertedPageCurlFilter -> InvertedPageCurlAdjuster(filter)
                 is RotationBlurFilter -> RotationalBlurAdjuster(filter)
                 is GPUImageSharpenFilter -> SharpnessAdjuster(filter)
@@ -424,6 +424,14 @@ object GPUImageFilterTools {
                 return (end - start) * percentage / 100 + start
             }
         }
+
+        private inner class CircleScanAdjuster(filter: CircleScanFilter) :
+                Adjuster<CircleScanFilter>(filter) {
+            override fun adjust(percentage: Int) {
+                filter.setProgress(range(percentage, 0.0F, 1.0f))
+            }
+        }
+
 
         private inner class InvertedPageCurlAdjuster(filter: InvertedPageCurlFilter) :
                 Adjuster<InvertedPageCurlFilter>(filter) {
