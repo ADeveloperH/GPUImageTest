@@ -10,26 +10,28 @@ import jp.co.cyberagent.android.gpuimage.filter.GPUImageFilter;
 /**
  * @author huangjian
  * @create 2020/8/15
- * @Description 圆形扫描效果
+ * @Description 风车效果
  */
-public class CircleScanFilter extends GPUImageFilter {
+public class PinWheellFilter extends GPUImageFilter {
 
     private float progress = 0;
-    private int inputHeightLocation;
-    private int inputWidthLocation;
+    private int imageWidthLocation;
+    private int imageHeightLocation;
     private int progressLocation;
+    private int speedLocation;
 
 
-    public CircleScanFilter(Context context) {
-        super(NO_FILTER_VERTEX_SHADER, loadShader("circlescan.fsh", context));
+    public PinWheellFilter(Context context) {
+        super(NO_FILTER_VERTEX_SHADER, loadShader("pinwheel.fsh", context));
     }
 
     @Override
     public void onInit() {
         super.onInit();
-        inputWidthLocation = GLES20.glGetUniformLocation(getProgram(), "inputWidth");
-        inputHeightLocation = GLES20.glGetUniformLocation(getProgram(), "inputHeight");
+        imageWidthLocation = GLES20.glGetUniformLocation(getProgram(), "imageWidth");
+        imageHeightLocation = GLES20.glGetUniformLocation(getProgram(), "imageHeight");
         progressLocation = GLES20.glGetUniformLocation(getProgram(), "progress");
+        speedLocation = GLES20.glGetUniformLocation(getProgram(), "speed");
     }
 
 
@@ -38,14 +40,15 @@ public class CircleScanFilter extends GPUImageFilter {
         super.onDraw(textureId, cubeBuffer, textureBuffer);
         int outputHeight = getOutputHeight();
         int outputWidth = getOutputWidth();
-        setInteger(inputHeightLocation, outputHeight);
-        setInteger(inputWidthLocation, outputWidth);
+        setInteger(imageHeightLocation, outputHeight);
+        setInteger(imageWidthLocation, outputWidth);
         setFloat(progressLocation, progress);
+        setFloat(speedLocation, 2.0F);
     }
 
 
     public void setProgress(final float progress) {
         this.progress = progress;
-        setFloat(progressLocation, progress);
+        setFloat(progressLocation,progress);
     }
 }
