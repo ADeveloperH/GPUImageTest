@@ -92,12 +92,14 @@ vec4 seeThroughWithShadow(float yc, vec2 p, vec3 point, mat3 rotation, mat3 rrot
 vec4 backside(float yc, vec3 point)
 {
     vec4 color = getFromColor(point.xy);
-    float gray = (color.r + color.b + color.g) / 15.0;
-    gray += (8.0 / 10.0) * (pow(1.0 - abs(yc / cylinderRadius), 2.0 / 10.0) / 2.0 + (5.0 / 10.0));
-    color.rgb = vec3(gray);
+    //默认的灰色反面
+//    float gray = (color.r + color.b + color.g) / 15.0;
+//    gray += (8.0 / 10.0) * (pow(1.0 - abs(yc / cylinderRadius), 2.0 / 10.0) / 2.0 + (5.0 / 10.0));
+//    color.rgb = vec3(gray);
     return color;
 }
 
+//获取背景
 vec4 behindSurface(vec2 p, float yc, vec3 point, mat3 rrotation)
 {
     float shado = (1.0 - ((-cylinderRadius - yc) / amount * 7.0)) / 6.0;
@@ -151,7 +153,7 @@ vec4 transition(vec2 p) {
 
     if (yc > cylinderRadius)
     {
-        // Flat surface
+        // Flat surface 正面未弯曲部分
         return getFromColor(p);
     }
 
@@ -160,6 +162,7 @@ vec4 transition(vec2 p) {
     float hitAngleMod = mod(hitAngle, 2.0 * PI);
     if ((hitAngleMod > PI && amount < 0.5) || (hitAngleMod > PI/2.0 && amount < 0.0))
     {
+        //正面弯曲部分
         return seeThrough(yc, p, rotation, rrotation);
     }
 
@@ -190,6 +193,7 @@ vec4 transition(vec2 p) {
     vec4 cl = seeThroughWithShadow(yc, p, point, rotation, rrotation);
     float dist = distanceToEdge(point);
 
+    //边界
     return antiAlias(color, cl, dist);
 }
 

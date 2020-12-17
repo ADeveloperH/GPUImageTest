@@ -18,6 +18,7 @@ public class CircleScanFilter extends GPUImageFilter {
     private int inputHeightLocation;
     private int inputWidthLocation;
     private int progressLocation;
+    private int reverseLocation;
 
 
     public CircleScanFilter(Context context) {
@@ -30,6 +31,7 @@ public class CircleScanFilter extends GPUImageFilter {
         inputWidthLocation = GLES20.glGetUniformLocation(getProgram(), "inputWidth");
         inputHeightLocation = GLES20.glGetUniformLocation(getProgram(), "inputHeight");
         progressLocation = GLES20.glGetUniformLocation(getProgram(), "progress");
+        reverseLocation = GLES20.glGetUniformLocation(getProgram(), "reverse");
     }
 
 
@@ -41,6 +43,7 @@ public class CircleScanFilter extends GPUImageFilter {
         setInteger(inputHeightLocation, outputHeight);
         setInteger(inputWidthLocation, outputWidth);
         setFloat(progressLocation, progress);
+        setInteger(reverseLocation, GLES20.GL_TRUE);
     }
 
 

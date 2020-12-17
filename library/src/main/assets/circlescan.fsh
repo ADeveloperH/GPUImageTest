@@ -6,8 +6,7 @@ uniform sampler2D inputImageTexture;
 uniform int inputWidth;
 uniform int inputHeight;
 uniform float progress;
-
-
+uniform bool reverse;//true 为顺时针 false 为逆时针
 void main()
 {
     vec2 t_screen_size = vec2(inputWidth, inputHeight);
@@ -21,12 +20,24 @@ void main()
     {
         t_theta = 360.0-t_theta;
     }
-    float t_angle_threshold = progress*360.0;
-    if (t_theta<t_angle_threshold){
-        //    gl_FragColor = texture2D(inputImageTexture2, textureCoordinate);
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    } else {
-        gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
+
+    if(reverse){
+        float t_angle_threshold = (1.0 - progress)*360.0;
+        if (t_theta<t_angle_threshold){
+            gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
+        } else {
+            //    gl_FragColor = texture2D(inputImageTexture2, textureCoordinate);
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+        }
+    }else{
+        float t_angle_threshold = progress*360.0;
+        if (t_theta<t_angle_threshold){
+            //    gl_FragColor = texture2D(inputImageTexture2, textureCoordinate);
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+        } else {
+            gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
+        }
     }
+
 }
 
