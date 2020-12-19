@@ -10,7 +10,7 @@ import jp.co.cyberagent.android.gpuimage.filter.GPUImageFilter;
 /**
  * @author huangjian
  * @create 2020/8/15
- * @Description 风车效果
+ * @Description 开幕效果
  */
 public class DoorWaylFilter extends GPUImageFilter {
 
