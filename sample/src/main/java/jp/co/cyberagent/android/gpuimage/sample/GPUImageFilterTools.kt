@@ -31,7 +31,8 @@ object GPUImageFilterTools {
             listener: (filterName: String, filter: GPUImageFilter) -> Unit
     ) {
         val filters = FilterList().apply {
-            addFilter("RoundRect(圆角矩形t)", FilterType.ROUNDRECT)
+            addFilter("FlashWhite(闪白)", FilterType.FLASHWHITE)
+            addFilter("RoundRect(圆角矩形)", FilterType.ROUNDRECT)
             addFilter("Chromatic(波纹色差capcut)", FilterType.CHROMATIC)
             addFilter("Cube(立方体capcut)", FilterType.CUBE)
             addFilter("DoorWay(开幕capcut)", FilterType.DOORWAY)
@@ -145,6 +146,7 @@ object GPUImageFilterTools {
 
     private fun createFilterForType(context: Context, type: FilterType): GPUImageFilter {
         return when (type) {
+            FilterType.FLASHWHITE -> FlashWhiteFilter(context)
             FilterType.ROUNDRECT -> RoundRectFilter(context)
             FilterType.CHROMATIC -> ChromaticFilter(context)
             FilterType.CUBE -> CubeFilter(context)
@@ -348,7 +350,7 @@ object GPUImageFilterTools {
     }
 
     private enum class FilterType {
-        ROUNDRECT,CHROMATIC,CUBE,DOORWAY,PINWHEEL,CIRCLESCAN,INVERTEDPAGECURL,ROTATIONALBLUR,FAKE3D, SOULSCALE, CONTRAST, GRAYSCALE, SHARPEN, SEPIA, SOBEL_EDGE_DETECTION, THRESHOLD_EDGE_DETECTION, THREE_X_THREE_CONVOLUTION, FILTER_GROUP, EMBOSS, POSTERIZE, GAMMA, BRIGHTNESS, INVERT, HUE, PIXELATION,
+        FLASHWHITE,ROUNDRECT,CHROMATIC,CUBE,DOORWAY,PINWHEEL,CIRCLESCAN,INVERTEDPAGECURL,ROTATIONALBLUR,FAKE3D, SOULSCALE, CONTRAST, GRAYSCALE, SHARPEN, SEPIA, SOBEL_EDGE_DETECTION, THRESHOLD_EDGE_DETECTION, THREE_X_THREE_CONVOLUTION, FILTER_GROUP, EMBOSS, POSTERIZE, GAMMA, BRIGHTNESS, INVERT, HUE, PIXELATION,
         SATURATION, EXPOSURE, HIGHLIGHT_SHADOW, MONOCHROME, OPACITY, RGB, WHITE_BALANCE, VIGNETTE, TONE_CURVE, LUMINANCE, LUMINANCE_THRESHSOLD, BLEND_COLOR_BURN, BLEND_COLOR_DODGE, BLEND_DARKEN,
         BLEND_DIFFERENCE, BLEND_DISSOLVE, BLEND_EXCLUSION, BLEND_SOURCE_OVER, BLEND_HARD_LIGHT, BLEND_LIGHTEN, BLEND_ADD, BLEND_DIVIDE, BLEND_MULTIPLY, BLEND_OVERLAY, BLEND_SCREEN, BLEND_ALPHA,
         BLEND_COLOR, BLEND_HUE, BLEND_SATURATION, BLEND_LUMINOSITY, BLEND_LINEAR_BURN, BLEND_SOFT_LIGHT, BLEND_SUBTRACT, BLEND_CHROMA_KEY, BLEND_NORMAL, LOOKUP_AMATORKA,
@@ -371,6 +373,7 @@ object GPUImageFilterTools {
 
         init {
             adjuster = when (filter) {
+                is FlashWhiteFilter -> FlashWhiteAdjuster(filter)
                 is RoundRectFilter -> RoundRectAdjuster(filter)
                 is ChromaticFilter -> Chromaticjuster(filter)
                 is CubeFilter -> CubeAdjuster(filter)
@@ -453,6 +456,14 @@ object GPUImageFilterTools {
                 filter.setProgress(range(percentage, 0.0F, 1.0f))
             }
         }
+
+        private inner class FlashWhiteAdjuster(filter: FlashWhiteFilter) :
+                Adjuster<FlashWhiteFilter>(filter) {
+            override fun adjust(percentage: Int) {
+                filter.setAlpha(range(percentage, 0.0F, 1.0f))
+            }
+        }
+
 
         private inner class CubeAdjuster(filter: CubeFilter) :
                 Adjuster<CubeFilter>(filter) {
