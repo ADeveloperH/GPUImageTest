@@ -5,7 +5,7 @@ uniform sampler2D inputImageTexture2;
 
 uniform float value;
 
-
+//参考实现方案 https://zhuanlan.zhihu.com/p/344110917
 void main() {
 //    vec4 color = texture2D(inputImageTexture, textureCoordinate);
 
