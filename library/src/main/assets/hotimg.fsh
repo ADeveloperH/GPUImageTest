@@ -7,7 +7,7 @@ uniform float value;
 
 
 void main() {
-    vec4 color = texture2D(inputImageTexture, textureCoordinate);
+//    vec4 color = texture2D(inputImageTexture, textureCoordinate);
 
     //发光效果
     //    color *= 2.0;
@@ -23,10 +23,8 @@ void main() {
     //    color.rgb = texture2D (inputImageTexture2, vec2 (p/3.0, 0.0)).rgb;
     //    gl_FragColor = color;
 
-    vec4 mainColor = texture2D(inputImageTexture, textureCoordinate);
     vec4 inputColor = texture2D(inputImageTexture, textureCoordinate);
     float threshold = mod(value/10.0, 1.0);
-    vec4 resColor;
     float grayValue= dot(inputColor.rgb, vec3(0.3, 0.59, 0.11));
     vec4 rampColor = texture2D(inputImageTexture2, vec2(fract(grayValue + threshold), 0.0));
     gl_FragColor = rampColor;
