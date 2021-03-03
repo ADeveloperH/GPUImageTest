@@ -56,7 +56,7 @@ public class GPUImageView extends FrameLayout {
     private boolean isShowLoading = true;
     private GPUImageFilter filter;
     public Size forceSize = null;
-    private float ratio = 0.0f;
+    private float ratio = 9/16.0f;
 
     public final static int RENDERMODE_WHEN_DIRTY = 0;
     public final static int RENDERMODE_CONTINUOUSLY = 1;

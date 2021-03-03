@@ -12,8 +12,8 @@
 
         <jp.co.cyberagent.android.gpuimage.GPUImageView
             android:id="@+id/gpuimage"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center" />
         <TextView
             android:id="@+id/tv_filter_name"
