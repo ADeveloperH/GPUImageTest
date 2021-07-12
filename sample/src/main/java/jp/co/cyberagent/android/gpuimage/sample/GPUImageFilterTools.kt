@@ -31,6 +31,10 @@ object GPUImageFilterTools {
             listener: (filterName: String, filter: GPUImageFilter) -> Unit
     ) {
         val filters = FilterList().apply {
+            addFilter("剪映横线效果（横线毛刺）", FilterType.HORIZONALLIE)
+            addFilter("荧光线描", FilterType.EDGESOBEL)
+            addFilter("水波纹", FilterType.RIPPLE)
+            addFilter("浮雕效果", FilterType.EMBOSS2)
             addFilter("Blur(模糊效果)", FilterType.BLUR)
             addFilter("HotImg(热成像/彩色负片)", FilterType.HOTIMG)
             addFilter("ZoomFarBlur(运镜转场拉远模糊)", FilterType.ZOOMFAR)
@@ -150,6 +154,10 @@ object GPUImageFilterTools {
 
     private fun createFilterForType(context: Context, type: FilterType): GPUImageFilter {
         return when (type) {
+            FilterType.HORIZONALLIE -> HorizonalLineFilter(context)
+            FilterType.EDGESOBEL -> EdgeSobelFilter(context)
+            FilterType.RIPPLE -> RippleFilter(context)
+            FilterType.EMBOSS2 -> EmbossFilter2(context)
             FilterType.BLUR -> BlurFilter(context)
             FilterType.HOTIMG -> HotImgFilter(context).apply {
                 bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.ccc_color)
@@ -360,7 +368,7 @@ object GPUImageFilterTools {
     }
 
     private enum class FilterType {
-        BLUR,HOTIMG,ZOOMFAR,FLASHWHITE,ROUNDRECT,CHROMATICSCALE,CHROMATIC,CUBE,DOORWAY,PINWHEEL,CIRCLESCAN,INVERTEDPAGECURL,ROTATIONALBLUR,FAKE3D, SOULSCALE, CONTRAST, GRAYSCALE, SHARPEN, SEPIA, SOBEL_EDGE_DETECTION, THRESHOLD_EDGE_DETECTION, THREE_X_THREE_CONVOLUTION, FILTER_GROUP, EMBOSS, POSTERIZE, GAMMA, BRIGHTNESS, INVERT, HUE, PIXELATION,
+        HORIZONALLIE, EDGESOBEL, RIPPLE, EMBOSS2, BLUR, HOTIMG, ZOOMFAR, FLASHWHITE, ROUNDRECT, CHROMATICSCALE, CHROMATIC, CUBE, DOORWAY, PINWHEEL, CIRCLESCAN, INVERTEDPAGECURL, ROTATIONALBLUR, FAKE3D, SOULSCALE, CONTRAST, GRAYSCALE, SHARPEN, SEPIA, SOBEL_EDGE_DETECTION, THRESHOLD_EDGE_DETECTION, THREE_X_THREE_CONVOLUTION, FILTER_GROUP, EMBOSS, POSTERIZE, GAMMA, BRIGHTNESS, INVERT, HUE, PIXELATION,
         SATURATION, EXPOSURE, HIGHLIGHT_SHADOW, MONOCHROME, OPACITY, RGB, WHITE_BALANCE, VIGNETTE, TONE_CURVE, LUMINANCE, LUMINANCE_THRESHSOLD, BLEND_COLOR_BURN, BLEND_COLOR_DODGE, BLEND_DARKEN,
         BLEND_DIFFERENCE, BLEND_DISSOLVE, BLEND_EXCLUSION, BLEND_SOURCE_OVER, BLEND_HARD_LIGHT, BLEND_LIGHTEN, BLEND_ADD, BLEND_DIVIDE, BLEND_MULTIPLY, BLEND_OVERLAY, BLEND_SCREEN, BLEND_ALPHA,
         BLEND_COLOR, BLEND_HUE, BLEND_SATURATION, BLEND_LUMINOSITY, BLEND_LINEAR_BURN, BLEND_SOFT_LIGHT, BLEND_SUBTRACT, BLEND_CHROMA_KEY, BLEND_NORMAL, LOOKUP_AMATORKA,
@@ -383,6 +391,10 @@ object GPUImageFilterTools {
 
         init {
             adjuster = when (filter) {
+                is HorizonalLineFilter -> HorizonalLineAdjuster(filter)
+                is EdgeSobelFilter -> EdgeSobelAdjuster(filter)
+                is RippleFilter -> RippleAdjuster(filter)
+                is EmbossFilter2 -> Emboss2Adjuster(filter)
                 is BlurFilter -> BlurAdjuster(filter)
                 is HotImgFilter -> HotImgAdjuster(filter)
                 is ZoomFarFilter -> ZoomFarAdjuster(filter)
@@ -457,6 +469,34 @@ object GPUImageFilterTools {
             }
         }
 
+        private inner class HorizonalLineAdjuster(filter: HorizonalLineFilter) :
+                Adjuster<HorizonalLineFilter>(filter) {
+            override fun adjust(percentage: Int) {
+                filter.setProgress(range(percentage, 0.0F, 1.0f))
+            }
+        }
+
+        private inner class EdgeSobelAdjuster(filter: EdgeSobelFilter) :
+                Adjuster<EdgeSobelFilter>(filter) {
+            override fun adjust(percentage: Int) {
+                filter.setProgress(range(percentage, 0.0F, 1.0f))
+            }
+        }
+
+        private inner class RippleAdjuster(filter: RippleFilter) :
+                Adjuster<RippleFilter>(filter) {
+            override fun adjust(percentage: Int) {
+                filter.setProgress(range(percentage, 0.0F, 1.0f))
+            }
+        }
+
+        private inner class Emboss2Adjuster(filter: EmbossFilter2) :
+                Adjuster<EmbossFilter2>(filter) {
+            override fun adjust(percentage: Int) {
+                filter.setProgress(range(percentage, 0.0F, 5.0f))
+            }
+        }
+
         private inner class BlurAdjuster(filter: BlurFilter) :
                 Adjuster<BlurFilter>(filter) {
             override fun adjust(percentage: Int) {
@@ -484,6 +524,7 @@ object GPUImageFilterTools {
                 filter.setBlurSize(range(percentage, 0.0F, 100.0f))
             }
         }
+
         private inner class ChromaticAdjuster(filter: ChromaticFilter) :
                 Adjuster<ChromaticFilter>(filter) {
             override fun adjust(percentage: Int) {
@@ -547,7 +588,6 @@ object GPUImageFilterTools {
                 filter.setIntensity(range(percentage, -2.0F, 2.0f))
             }
         }
-
 
 
         private inner class SharpnessAdjuster(filter: GPUImageSharpenFilter) :

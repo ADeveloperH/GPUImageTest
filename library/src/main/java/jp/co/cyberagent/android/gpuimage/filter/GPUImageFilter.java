@@ -56,7 +56,7 @@ public class GPUImageFilter {
     private final LinkedList<Runnable> runOnDraw;
     private final String vertexShader;
     private final String fragmentShader;
-    private int glProgId;
+    protected int glProgId;
     private int glAttribPosition;
     private int glUniformTexture;
     private int glAttribTextureCoordinate;
