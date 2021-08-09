@@ -67,13 +67,15 @@ public class SKinNeedlingFilter extends GPUImageFilter {
 
     double[] uScanLineJitter_x = {0.03, 0.01, 0.02, 0.06, 0.065, 0.05, 0.03, 0.04, 0.0, 0.0, 0.0, 0.0, 0.04, 0.07, 0.06, 0.075, 0.03, 0.035, 0.05, 0.065,
             0.0, 0.0, 0.0, 0.0, 0.073, 0.05, 0.08, 0.05, 0.07, 0.035, 0.017, 0.04, 0.0, 0.0, 0.0, 0.0, 0.038, 0.02, 0.025, 0.08, 0.055, 0.025, 0.06, 0.02,
-            0.0, 0.0, 0.0, 0.0, 0.022, 0.04, 0.03, 0.016, 0.028, 0.02, 0.045, 0.03, 0.0, 0.0, 0.0, 0.0, 0.014, 0.03, 0.022, 0.034, 0.075, 0.056, 0.012, 0.034, 0.0, 0.0, 0.0, 0.0};
+            0.0, 0.0, 0.0, 0.0, 0.022, 0.04, 0.03, 0.016, 0.028, 0.02, 0.045, 0.03, 0.0, 0.0, 0.0, 0.0, 0.014, 0.03, 0.022, 0.034, 0.075, 0.056, 0.012, 0.034,
+            0.0, 0.0, 0.0, 0.0};
     double[] uScanLineJitter_y = {0.9, 0.77, 0.8, 0.65, 0.45, 0.7, 0.35, 0.65, 0.0, 0.0, 0.0, 0.0, 0.9, 0.68, 0.7, 0.85, 0.44, 0.56, 0.78, 0.89, 0.0, 0.0, 0.0,
             0.0, 0.94, 0.88, 0.65, 0.32, 0.63, 0.85, 0.92, 0.95, 0.0, 0.0, 0.0, 0.0, 0.82, 0.95, 0.82, 0.72, 0.35, 0.25, 0.4, 0.74, 0.0, 0.0, 0.0, 0.0, 0.87, 0.6,
             0.39, 0.24, 0.49, 0.6, 0.88, 0.85, 0.0, 0.0, 0.0, 0.0, 0.95, 0.88, 0.64, 0.28, 0.37, 0.54, 0.66, 0.82, 0.0, 0.0, 0.0, 0.0};
     double[] uColorDrift_x = {0.025, 0.035, 0.05, 0.025, 0.04, 0.035, 0.03, 0.02, 0.0, 0.0, 0.0, 0.0, 0.035, 0.055, 0.04, 0.02, 0.025, 0.07, 0.006, 0.04, 0.0,
             0.0, 0.0, 0.0, 0.025, 0.025, 0.015, 0.025, 0.0075, 0.075, 0.0175, 0.015, 0.0, 0.0, 0.0, 0.0, 0.04, 0.035, 0.025, 0.035, 0.02, 0.045, 0.03, 0.025,
-            0.0, 0.0, 0.0, 0.0, 0.015, 0.02, 0.035, 0.0275, 0.02, 0.015, 0.01, 0.008, 0.0, 0.0, 0.0, 0.0, 0.02, 0.026, 0.046, 0.032, 0.016, 0.015, 0.04, 0.02, 0.0, 0.0, 0.0, 0.0};
+            0.0, 0.0, 0.0, 0.0, 0.015, 0.02, 0.035, 0.0275, 0.02, 0.015, 0.01, 0.008, 0.0, 0.0, 0.0, 0.0, 0.02, 0.026, 0.046, 0.032, 0.016, 0.015, 0.04, 0.02,
+            0.0, 0.0, 0.0, 0.0};
     double[] uColorDrift_y = {0.05, 0.04, 0.03, 0.08, 0.07, 0.06, 0.05, 0.02, 0.0, 0.0, 0.0, 0.0, 0.04, 0.06, 0.15, 0.1, 0.2, 0.1, 0.04, 0.03, 0.0, 0.0, 0.0,
             0.0, 0.08, 0.05, 0.07, 0.03, 0.09, 0.07, 0.06, 0.15, 0.0, 0.0, 0.0, 0.0, 0.03, 0.07, 0.09, 0.08, 0.05, 0.02, 0.01, 0.04, 0.0, 0.0, 0.0, 0.0, 0.05,
             0.02, 0.04, 0.06, 0.08, 0.05, 0.02, 0.01, 0.0, 0.0, 0.0, 0.0, 0.04, 0.06, 0.09, 0.08, 0.06, 0.02, 0.01, 0.03, 0.0, 0.0, 0.0, 0.0};
@@ -90,18 +92,25 @@ public class SKinNeedlingFilter extends GPUImageFilter {
 
     private void update() {
         int cur_id = (index % uScanLineJitter_x_size);
-        setFloat(uScanLineJitter_xLocation, (float) uScanLineJitter_x[cur_id]/2.0f);
+        float scanLineX = (float) uScanLineJitter_x[cur_id] / 2.0f;//X 轴横线长度
+        setFloat(uScanLineJitter_xLocation, scanLineX);
         cur_id = (index % uScanLineJitter_y_size);
-        setFloat(uScanLineJitter_yLocation, (float) uScanLineJitter_y[cur_id]);
+        float scanLineY = (float) uScanLineJitter_y[cur_id];//Y 轴横线间隔 0 时最密集，1 时没有。0.5 时基本满了
+        setFloat(uScanLineJitter_yLocation, scanLineY);
         cur_id = (index % uColorDrift_x_size);
-        setFloat(uColorDrift_xLocation, (float) uColorDrift_x[cur_id]/2.0f);
+        float colorX = (float) uColorDrift_x[cur_id] / 2.0f;//x 轴颜色偏移
+        setFloat(uColorDrift_xLocation, colorX);
         cur_id = (index % uColorDrift_y_size);
-        setFloat(uColorDrift_yLocation, (float) uColorDrift_y[cur_id]);
+        float colorY = (float) uColorDrift_y[cur_id];//y 轴颜色偏移
+        setFloat(uColorDrift_yLocation, colorY);
         setFloat(intensityLocation, (float) intensity);
         setFloat(horzIntensityLocation, (float) (horzIntensity * 2));
         setFloat(vertIntensityLocation, (float) (vertIntensity * 2));
         setFloat(uTimeStampLocation, progress);
+
         index++;
+        Log.d("hj", "SKinNeedlingFilter.update: scanLineX:" + (scanLineX * 720)
+                + "  scanLineY:" + (scanLineY * 1280) + "  colorX:" + (colorX * 720) + "  colorY:" + (colorY * 1280));
 
 
 

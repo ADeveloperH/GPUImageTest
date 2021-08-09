@@ -19,11 +19,6 @@ public class SKinNeedlingFilter2 extends GPUImageFilter {
     private int glUniformTexture2;
     private int uScanLineJitter_xLocation;
     private int uScanLineJitter_yLocation;
-    private int uColorDrift_xLocation;
-    private int uColorDrift_yLocation;
-    private int intensityLocation;
-    private int horzIntensityLocation;
-    private int vertIntensityLocation;
     private int uTimeStampLocation;
 
 
@@ -75,9 +70,9 @@ public class SKinNeedlingFilter2 extends GPUImageFilter {
 
     private void update() {
         int cur_id = (index % uScanLineJitter_x_size);
-        setFloat(uScanLineJitter_xLocation, (float) uScanLineJitter_x[cur_id]/2.0f);
+        setFloat(uScanLineJitter_xLocation, (float) uScanLineJitter_x[cur_id]/2.0f);//X 轴横线长度
         cur_id = (index % uScanLineJitter_y_size);
-        setFloat(uScanLineJitter_yLocation, (float) uScanLineJitter_y[cur_id]);
+        setFloat(uScanLineJitter_yLocation, (float) uScanLineJitter_y[cur_id]);//Y 轴横线间隔
 //        setFloat(intensityLocation, 1);
         setFloat(uTimeStampLocation, progress);
         index++;

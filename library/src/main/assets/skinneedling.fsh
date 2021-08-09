@@ -27,7 +27,7 @@ void main() {
     float jitter = nrand(v, uTimeStamp) * 2.0 - 1.0;
     jitter *= step(uScanLineJitter_y, abs(jitter)) * uScanLineJitter_x * intensity;
     float jump = mix(v, fract(v + uVerticalJump.y), uVerticalJump.x);
-    float shake = (nrand(uTimeStamp, 2.0) - 0.5) * uHorizontalShake;
+    float shake = (nrand(uTimeStamp, 2.0) - 0.5) * 0.0;
 
     // Color drift
     float drift = sin(jump + uColorDrift_y) * uColorDrift_x * horzIntensity;
